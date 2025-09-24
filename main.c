@@ -1,38 +1,36 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
 #include "file_lib.h"
 
-/**
- * The contents of the file are a char*, but that doesn't
- * mean it is a "string".  When working with "strings" in C
- * though, we normally NULL terminate.  This is not NULL
- * terminated.  Nor could it be, as we then wouldn't be
- * able to represent NULL in the file.  So, we need to print
- * each character separately.  Here, we are printing as bytes
- * (base 16).
- * 
- * @parameters
- * char* file_contents - The file's bytes.
- * size_t num_bytes - The number of bytes to print.
- */
-void print_file(char* file_contents, size_t num_bytes){
-    // Note this is printing the bytes in hex
-    for(size_t i = 0; i<num_bytes; ++i){
-        printf("%x", file_contents[i]);
-    }
-    printf("\n");
-}
+#define HEADER_SIZE 44
 
 int main(int argc, char** argv){
     char* contents;
-
-    // Read the input file
     size_t num_bytes = read_file(argv[1], &contents);
+    char* data = contents + HEADER_SIZE;
+    size_t data_size = num_bytes - HEADER_SIZE;
+
     printf("%s\n", argv[1]);
     printf("%lu bytes read.\n", num_bytes);
 
-    // Print the file contents in hex
-    print_file(contents, num_bytes);
+    int num_channels = *(contents + 22);
+    int  bits_per_sample = *(contents + 34);
+    int bytes_per_sample = (bits_per_sample / 8) * num_channels;
+
+    printf("Channels: %u\n", num_channels);
+    printf("Bits per sample: %u\n", bits_per_sample);
+    printf("Bytes per sample (Total): %d\n", bytes_per_sample);
+
+    // Reverse the data
+    for (size_t i = 0; i < data_size / 2; i += bytes_per_sample) {
+        for (int j = 0; j < bytes_per_sample; j++) {
+            char tmp = data[i + j];
+            data[i + j] = data[data_size - bytes_per_sample - i + j];
+            data[data_size - bytes_per_sample - i + j] = tmp;
+        }
+    }
 
     // Write the file to the output
     write_file(argv[2], contents, num_bytes);
