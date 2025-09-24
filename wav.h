@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <stddef.h>
+#include "file_lib.h"
 
 typedef struct __attribute__((packed)) {
     char riff[4]; // will store first 4 bytes; should be RIFF
