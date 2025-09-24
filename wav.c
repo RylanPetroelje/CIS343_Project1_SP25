@@ -1,3 +1,6 @@
+#ifndef WAV_C
+#define WAV_C
+
 #include "wav.h"
 
 int setWavHeader(char** file, wav_header* wav) {
