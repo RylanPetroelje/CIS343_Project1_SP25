@@ -18,9 +18,13 @@ int main(int argc, char** argv){
     int num_channels = *(contents + 22);
     int  bits_per_sample = *(contents + 34);
     int bytes_per_sample = (bits_per_sample / 8) * num_channels;
+    int sample_rate = *(int*)(contents + 24);
 
-    printf("Channels: %u\n", num_channels);
-    printf("Bits per sample: %u\n", bits_per_sample);
+    printf("Input File Name: %s\n", argv[1]);
+    printf("Output File Name: %s\n", argv[2]);
+    printf("Sample Rate: %d\n", sample_rate);
+    printf("Channels: %d\n", num_channels);
+    printf("Bits per sample: %d\n", bits_per_sample);
     printf("Bytes per sample (Total): %d\n", bytes_per_sample);
 
     // Reverse the data
