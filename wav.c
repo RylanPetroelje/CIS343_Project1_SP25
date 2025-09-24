@@ -2,9 +2,7 @@
 
 int setWavHeader(char** file, wav_header* wav) {
     char* contents;
-    size_t num_bytes = read_file(file, &contents);
-    char* data = contents + 44;
-    size_t data_size = num_bytes - HEADER_SIZE;
+    read_file(file, &contents);
 
     wav.sampleRate = *(int*)(contents + 24);
     wav.channel = *(contents + 22);
