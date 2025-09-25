@@ -6,32 +6,28 @@
 int setWavHeader(char* contents, wav_header* wav) {
 
     if (*(contents) == 'R' || *(contents + 1) == 'I' || *(contents + 2) == 'F' || *(contents + 3) == 'F') {
-        printf("File is not RIFF subtype");
+        printf("File is not RIFF subtype\n");
         return -1;
     }
 
     if (*(contents + 8) == 'W' || *(contents + 9) == 'A' || *(contents + 10) == 'V' || *(contents + 11) == 'E') {
-        printf("File is not WAV");
+        printf("File is not WAV\n");
         return -1;
     }
 
     if (*(contents + 20) != 1) {
-        printf("Format type is not 1");
+        printf("Format type is not 1\n");
         return -1;
     }
 
     if (*(contents + 22) != 2) {
-        printf("File is not in stereo");
+        printf("File is not in stereo\n");
         return -1;
     }
 
     wav->sampleRate = *(int*)(contents + 24);
     wav->channels = *(int*)(contents + 22);
     wav->bitsPerSample = *(int*)(contents + 34);
-
-    printf("Sample Rate: %d\n", wav->sampleRate);
-    printf("Channels: %d\n", wav->channels);
-    printf("Bits per sample: %d\n", wav->bitsPerSample);
 
     return 1;
 }
