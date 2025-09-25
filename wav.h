@@ -11,7 +11,6 @@ typedef struct __attribute__((packed)) {
     unsigned int sampleRate;
     int channels; //will store whether file in mono or stereo; should be stereo
     int bitsPerSample;
-    WavFile* wavFile;
 } wav_header;
  
 typedef struct __attribute__((packed)) {
@@ -20,7 +19,7 @@ typedef struct __attribute__((packed)) {
     uint8_t* data;
 } wav_file;
 
-int setWavHeader(char** file, wav_header* wav);
+int setWavHeader(char* file, wav_header* wav);
 
 int defineHeaderDetails(char** file, wav_header* wavHeader, wav_file* wavFile);
 
