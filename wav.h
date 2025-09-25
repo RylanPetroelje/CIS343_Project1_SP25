@@ -23,6 +23,6 @@ int setWavHeader(char* file, wav_header* wav);
 
 int defineHeaderDetails(char* file, wav_header* wavHeader, wav_file* wavFile);
 
-void reverseWavFile(wav_file* wav);
+int reverseWavFile(wav_file* wav, char* file_path);
 
 #endif
