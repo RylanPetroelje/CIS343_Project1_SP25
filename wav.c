@@ -48,4 +48,23 @@ int defineHeaderDetails(char* file, wav_header* wavHeader, wav_file* wavFile) {
     return 1;
 }
 
+int reverseWavFile(wav_file* wav, char* file_path) {
+    int bytes_per_sample = (wav->header->bitsPerSample / 8) * wav->header->channels;
+    size_t data_size = wav->fileSize - 44;
+    char* data = wav->data + 44;
+    
+    for (size_t i = 0; i < data_size / 2; i += bytes_per_sample) {
+        for (int j = 0; j < bytes_per_sample; j++) {
+            char tmp = data[i + j];
+            data[i + j] = data[data_size - bytes_per_sample - i + j];
+            data[data_size - bytes_per_sample - i + j] = tmp;
+        }
+    }
+
+    write_file(file_path, wav->data, wav->fileSize);
+
+    return 1;
+}
+
+
 #endif
