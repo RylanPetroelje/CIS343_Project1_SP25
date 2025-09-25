@@ -36,7 +36,7 @@ int setWavHeader(char* contents, wav_header* wav) {
     return 1;
 }
 
-int defineHeaderDetails(char** file, wav_header* wavHeader, wav_file* wavFile) {
+int defineHeaderDetails(char* file, wav_header* wavHeader, wav_file* wavFile) {
     char* data;
     read_file(file, &data);
 

@@ -21,9 +21,8 @@ typedef struct __attribute__((packed)) {
 
 int setWavHeader(char* file, wav_header* wav);
 
-int defineHeaderDetails(char** file, wav_header* wavHeader, wav_file* wavFile);
+int defineHeaderDetails(char* file, wav_header* wavHeader, wav_file* wavFile);
 
 void reverseWavFile(wav_file* wav);
-
 
 #endif
