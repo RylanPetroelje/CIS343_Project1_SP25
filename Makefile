@@ -3,10 +3,10 @@ CC = gcc
 CFLAGS = -Wall -Wextra -std=c11
 
 # Target executable
-TARGET = program
+TARGET = reverse
 
 # Source and object files
-SRCS = main.c file_lib.c
+SRCS = original_main.c file_lib.c wav.c
 OBJS = $(SRCS:.c=.o)
 
 # Default rule
