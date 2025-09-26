@@ -29,19 +29,21 @@ int setWavHeader(char* contents, wav_header* wav) {
     wav->channels = *(int*)(contents + 22);
     wav->bitsPerSample = *(int*)(contents + 34);
 
-    return 1;
+    return 0;
 }
 
 int defineHeaderDetails(char* file, wav_header* wavHeader, wav_file* wavFile) {
     char* data;
     read_file(file, &data);
 
-    setWavHeader(data, wavHeader);
+    if (setWavHeader(data, wavHeader) == -1){
+        return -1;
+    };
 
     wavFile->fileSize = read_file(file, &wavFile->data);
     wavFile->header = wavHeader;
 
-    return 1;
+    return 0;
 }
 
 int reverseWavFile(wav_file* wav, char* file_path) {
@@ -59,7 +61,7 @@ int reverseWavFile(wav_file* wav, char* file_path) {
 
     write_file(file_path, wav->data, wav->fileSize);
 
-    return 1;
+    return 0;
 }
 
 
