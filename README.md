@@ -31,18 +31,18 @@ It is actually pretty easy. A .wav file is a subtype of 'RIFF' file. We aren't g
 If your file has any other values, just exit and print a message saying why!
 
 Otherwise, we want to reverse the data. However, we cannot simply reverse the bytes in the data section. Sound is sampled (measured) by a microphone at regular intervals. For instance, many of your files will show a sampling rate of 44,100 in bytes 24-27. This means the microphone took 44,100 samples per second. However, there may be more than one channel. If the recording were in stereo for instance, there would be two sets of samples stored (one for the left mic and one for the right). Samples are stored together. We will only work with two channel samples to make this easier. The data section will look something like this:
----
-| 02 01 04 03 | 06 05 08 07 |...
-|(left)(right)|(left)(right)|... More samples
-|-- Sample1 --|-- Sample2 --|...
----
+
+`| 02 01 04 03 | 06 05 08 07 |...`   
+`|(left)(right)|(left)(right)|... More samples`  
+`|-- Sample1 --|-- Sample2 --|...` 
+
 Almost all of our systems today are what we call little endian. This means that if we had a multi-byte value (for instance here we are using 16-bit or two-byte values for each measurement), that the most significant portion is stored to the right. So the '02 01' values would be interpreted as decimal 258. We usually think of numbers as big endian, meaning the most significant portion of the number is stored to the left (i.e. '01 02'). On a big endian system, '02 01' would evaluate to decimal 513. This makes sense, as the '02' would then be considered more significant, resulting in a larger number.
 To reverse the samples then, we need to make the last sample the first, the second-to-last the second, etc. But, we need to keep our endianess. The above samples would then be reveresed to:
----
-...              | 06 05 08 07 | 02 01 04 03 |
-... More samples |(left)(right)|(left)(right)| End of file
-...              |-- Sample2 --|-- Sample1 --|
----
+
+`...              | 06 05 08 07 | 02 01 04 03 |`  
+`... More samples |(left)(right)|(left)(right)| End of file`  
+`...              |-- Sample2 --|-- Sample1 --|`  
+
 Notice how we reversed the sample order but didn't reverse the channel or byte orderings? If we do this correctly, the .wav file will play in reverse, with the same stereo setup as the original (we won't hear the speakers swapped!).
 
 # Holy cow, how do I actually do this?
