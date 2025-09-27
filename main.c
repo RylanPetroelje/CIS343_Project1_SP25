@@ -1,44 +1,38 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include "file_lib.h"
-
-#define HEADER_SIZE 44
+#include "wav.h"
 
 int main(int argc, char** argv){
-    char* contents;
-    size_t num_bytes = read_file(argv[1], &contents);
-    char* data = contents + HEADER_SIZE;
-    size_t data_size = num_bytes - HEADER_SIZE;
+    
+    //printf("%d", argc);
+    //invalid arguments
+    if (argc != 3) {
+        printf("Invalid format. Try %s <input_file.wav> <output.wav>\n", argv[0]);
+        return 1;
+    }
 
-    printf("%s\n", argv[1]);
-    printf("%lu bytes read.\n", num_bytes);
-
-    int num_channels = *(contents + 22);
-    int  bits_per_sample = *(contents + 34);
-    int bytes_per_sample = (bits_per_sample / 8) * num_channels;
-    int sample_rate = *(int*)(contents + 24);
+    wav_header wavHeader;
+    wav_file wavFile;
 
     printf("Input File Name: %s\n", argv[1]);
     printf("Output File Name: %s\n", argv[2]);
-    printf("Sample Rate: %d\n", sample_rate);
-    printf("Channels: %d\n", num_channels);
-    printf("Bits per sample: %d\n", bits_per_sample);
-    printf("Bytes per sample (Total): %d\n", bytes_per_sample);
 
-    // Reverse the data
-    for (size_t i = 0; i < data_size / 2; i += bytes_per_sample) {
-        for (int j = 0; j < bytes_per_sample; j++) {
-            char tmp = data[i + j];
-            data[i + j] = data[data_size - bytes_per_sample - i + j];
-            data[data_size - bytes_per_sample - i + j] = tmp;
-        }
-    }
+    if (defineHeaderDetails(argv[1], &wavHeader, &wavFile) == -1) {
+        printf("Invalid Header Format\n");
+        return -1;
+    };
 
-    // Write the file to the output
-    write_file(argv[2], contents, num_bytes);
+    printf("File Size: %lu\n", wavFile.fileSize);
+    printf("Sample Rate: %d\n", wavHeader.sampleRate);
+    printf("Channels: %d\n", wavHeader.channels);
+    printf("Bits per sample: %d\n\n", wavHeader.bitsPerSample);
+    printf("Starting Reversal...\n");
 
-    free(contents); // Always free allocated memory
+    reverseWavFile(&wavFile, argv[2]);
+
+    printf("Done Reversing!\n");
+    printf("Reversed file written to %s\n", argv[2]);
+
+    free(wavFile.data); // Always free allocated memory
     return 0;
 }

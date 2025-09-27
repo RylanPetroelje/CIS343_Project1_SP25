@@ -1,25 +1,21 @@
-# Compiler and flags
+#compile flags
 CC = gcc
 CFLAGS = -Wall -Wextra -std=c11
 
-# Target executable
 TARGET = reverse
 
-# Source and object files
-SRCS = original_main.c file_lib.c wav.c
+SRCS = main.c file_lib.c wav.c
 OBJS = $(SRCS:.c=.o)
 
-# Default rule
 all: $(TARGET)
 
-# Linking
 $(TARGET): $(OBJS)
 	$(CC) $(CFLAGS) -o $@ $^
 
-# Compilation
+#compile
 %.o: %.c file_lib.h
 	$(CC) $(CFLAGS) -c $< -o $@
 
-# Clean build artifacts
+#get rid of .o's
 clean:
 	rm -f $(OBJS) $(TARGET)

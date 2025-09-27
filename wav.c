@@ -5,45 +5,60 @@
 
 int setWavHeader(char* contents, wav_header* wav) {
 
-    if (*(contents) == 'R' || *(contents + 1) == 'I' || *(contents + 2) == 'F' || *(contents + 3) == 'F') {
+    //Check if first 4 bits are RIFF
+    if (*(contents) != 'R' || *(contents + 1) != 'I' || *(contents + 2) != 'F' || *(contents + 3) != 'F') {
         printf("File is not RIFF subtype\n");
         return -1;
     }
 
-    if (*(contents + 8) == 'W' || *(contents + 9) == 'A' || *(contents + 10) == 'V' || *(contents + 11) == 'E') {
+    //Check if bits 8-11 are WAVE
+    if (*(contents + 8) != 'W' || *(contents + 9) != 'A' || *(contents + 10) != 'V' || *(contents + 11) != 'E') {
         printf("File is not WAV\n");
         return -1;
     }
 
+    //Checks if format type is 1
     if (*(contents + 20) != 1) {
         printf("Format type is not 1\n");
         return -1;
     }
 
+    //Checks if file is in stereo
     if (*(contents + 22) != 2) {
         printf("File is not in stereo\n");
         return -1;
     }
 
-    wav->sampleRate = *(int*)(contents + 24);
-    wav->channels = *(int*)(contents + 22);
-    wav->bitsPerSample = *(int*)(contents + 34);
+    wav->sampleRate = *(int*)(contents + 24); //Stores sample rate in an integer
+    wav->channels = *(int16_t*)(contents + 22); //Stores channels in a 16-bit integer
+    wav->bitsPerSample = *(int16_t*)(contents + 34); //Stores bits per sample in a 16-bit integer
 
     return 0;
 }
 
 int defineHeaderDetails(char* file, wav_header* wavHeader, wav_file* wavFile) {
-    char* data;
-    read_file(file, &data);
+    
+    //Deleted your local data variable. I think we want to store this in the wavFile struct
+    //char* = data
+    //fileSize = read_file(file, &data) 
+    wavFile->fileSize = read_file(file, (char**)&wavFile->data);
 
-    if (setWavHeader(data, wavHeader) == -1){
+    //Reading the file failed :(
+    if (wavFile->fileSize <= 1) {
+        return -1;
+    }
+
+    //If any of the tests in setWavHeader fail, we don't want this to run
+    if (setWavHeader(wavFile->data, wavHeader) == -1){
+        free(wavFile->data); //free the memory allocated with fread
         return -1;
     };
 
-    wavFile->fileSize = read_file(file, &wavFile->data);
+    //dont need to do this again bro
+    //wavFile->fileSize = read_file(file, &wavFile->data);
     wavFile->header = wavHeader;
 
-    return 0;
+    return 0; //Success
 }
 
 int reverseWavFile(wav_file* wav, char* file_path) {

@@ -16,7 +16,7 @@ typedef struct __attribute__((packed)) {
 typedef struct __attribute__((packed)) {
     wav_header* header;
     size_t fileSize;
-    uint8_t* data;
+    char* data;
 } wav_file;
 
 int setWavHeader(char* file, wav_header* wav);
